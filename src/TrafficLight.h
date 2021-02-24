@@ -20,8 +20,13 @@ template <class T>
 class MessageQueue
 {
 public:
+    void send(T &&msg);
+    T receive();
 
 private:
+    std::deque<T> _queue;
+    std::mutex _mutex;
+    std::condition_variable _condition_variable;
     
 };
 
@@ -37,7 +42,7 @@ class TrafficLight:TrafficObject
 public:
     // constructor / desctructor
     TrafficLight();
-    ~TrafficLight();
+    ~TrafficLight(){};
 
     // getters / setters
     TrafficLightPhase getCurrentPhase();
@@ -57,7 +62,7 @@ private:
     std::condition_variable _condition;
     std::mutex _mutex;
     TrafficLightPhase _currentPhase;
-    std::chrono::_V2::system_clock::duration _lastEvent;
+    MessageQueue<TrafficLightPhase> _messageQueue;
 };
 
 #endif
